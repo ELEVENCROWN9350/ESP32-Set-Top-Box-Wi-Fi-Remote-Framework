@@ -1,4 +1,4 @@
-ESP32 STB Wi-Fi Remote
+# ESP32 STB Wi-Fi Remote
 
 Turn your Set-Top Box into a Wi-Fi controlled device using an ESP32-C3.
 
@@ -6,34 +6,46 @@ This project allows an ESP32 to directly inject remote control commands into the
 
 The project was developed and tested on a 7Star Digital Set-Top Box but can be adapted to other Set-Top Boxes by capturing and replacing the remote timing arrays.
 
-Features
-Wi-Fi controlled Set-Top Box
-No IR LED required
-Direct IR receiver line injection
-ESP32-C3 compatible
-Lightweight web interface
-Android app support
-Supports Power, OK, Navigation, Number Keys and Menu functions
-Easily adaptable to other Set-Top Boxes
-Hardware Required
-ESP32-C3 Super Mini
-Set-Top Box
-Soldering Iron
-Jumper Wires
-Double-Sided Tape (for mounting)
-Multimeter (recommended)
-How It Works
+---
+
+## Features
+
+* Wi-Fi controlled Set-Top Box
+* No IR LED required
+* Direct IR receiver line injection
+* ESP32-C3 compatible
+* Lightweight web interface
+* Android app support
+* Power, OK, Navigation Buttons
+* Number Keys 0-9
+* Menu, Exit, Mute, Recall
+* Easily adaptable to other Set-Top Boxes
+
+---
+
+## Hardware Required
+
+* ESP32-C3 Super Mini
+* Set-Top Box
+* Soldering Iron
+* Jumper Wires
+* Double-Sided Tape
+* Multimeter (recommended)
+
+---
+
+## How It Works
 
 The ESP32 connects to the Set-Top Box's IR receiver output line.
 
 When a button is pressed on the web interface or Android app:
 
-ESP32 receives the HTTP request.
-ESP32 replays the stored timing sequence.
-The timing sequence is injected directly into the IR receiver output line.
-The Set-Top Box interprets the command exactly as if it came from the original remote.
+1. ESP32 receives the HTTP request.
+2. ESP32 replays the stored timing sequence.
+3. The timing sequence is injected directly into the IR receiver output line.
+4. The Set-Top Box interprets the command exactly as if it came from the original remote.
 
-Architecture:
+### Architecture
 
 Phone / Android App
 ↓
@@ -45,9 +57,11 @@ IR Receiver Output Line
 ↓
 Set-Top Box
 
-Wiring
+---
 
-Example wiring used during development:
+## Wiring
+
+### Example Wiring
 
 ESP32 GPIO5 -> IR Receiver Output
 
@@ -55,121 +69,145 @@ ESP32 GND -> STB Ground
 
 ESP32 5V -> STB USB 5V
 
-Important:
+### Important
 
 Powering the ESP32 directly from the STB's 3.3V rail may not provide enough current for Wi-Fi operation.
 
-It is recommended to power the ESP32 from a stable 5V source such as the STB USB port.
+Powering from the STB USB 5V rail is recommended.
 
-Installation
-1. Upload Firmware
+---
+
+## Installation
+
+### 1. Upload Firmware
 
 Open the Arduino sketch and update:
 
+```cpp
 const char* ssid = "YOUR_WIFI_NAME";
 const char* password = "YOUR_WIFI_PASSWORD";
+```
 
 Upload the sketch to the ESP32-C3.
 
-2. Connect Hardware
+### 2. Connect Hardware
 
 Connect:
 
-GPIO5 to IR receiver output
-GND to STB ground
-5V to STB USB 5V
-3. Power On
+* GPIO5 to IR receiver output
+* GND to STB ground
+* 5V to STB USB 5V
+
+### 3. Power On
 
 Power the Set-Top Box.
 
 Open Serial Monitor and note the ESP32 IP address.
 
-4. Open Web Interface
+### 4. Open Web Interface
 
 Visit:
 
+```text
 http://ESP32_IP_ADDRESS
+```
 
 Example:
 
+```text
 http://192.168.1.103
+```
 
-The remote control page should appear.
+---
 
-Android App
+## Android Application
 
-An Android application is included for easier control.
+The Android application communicates with the ESP32 using HTTP requests over the local Wi-Fi network.
 
-Update the ESP32 IP address inside the application source code before building:
+Update the ESP32 IP address before building the APK.
 
-http://192.168.1.xxx
+---
 
-Build and install the APK.
+## Supported Buttons
 
-The app communicates with the ESP32 using simple HTTP requests over the local Wi-Fi network.
+### Navigation
 
-Supported Buttons
+* Up
+* Down
+* Left
+* Right
+* OK
 
-Current implementation includes:
+### System
 
-Power
-OK
-Up
-Down
-Left
-Right
-Mute
-Recall
-Menu
-Exit
-Number Keys 0-9
+* Power
+* Menu
+* Exit
+* Mute
+* Recall
 
-Additional buttons can easily be added.
+### Number Keys
 
-Adapting To Other Set-Top Boxes
+* 0
+* 1
+* 2
+* 3
+* 4
+* 5
+* 6
+* 7
+* 8
+* 9
 
-This project is not limited to 7Star STBs.
+---
 
-To adapt it to another model:
+## Adapting To Other Set-Top Boxes
 
-Step 1 - Upload Decoder Firmware
+This project can be adapted to other Set-Top Boxes.
+
+### Step 1 - Upload Decoder Firmware
 
 Upload the decoder sketch.
 
 Connect:
 
+```text
 GPIO4 -> IR Receiver Output
+GND   -> STB Ground
+```
 
-GND -> STB Ground
-
-Step 2 - Capture Signals
+### Step 2 - Capture Signals
 
 Press each button on the original remote and record:
 
-Protocol
-Hex Code
-Raw Timing Array
-Step 3 - Replace Timing Arrays
+* Protocol
+* Hex Code
+* Raw Timing Array
 
-Replace the timing arrays in the transmitter firmware with the newly captured values.
+### Step 3 - Replace Timing Arrays
 
-Step 4 - Upload Updated Firmware
+Replace the timing arrays in the transmitter firmware.
+
+### Step 4 - Upload Updated Firmware
 
 Flash the modified transmitter sketch.
 
-The web interface and Android application can remain unchanged.
+The Android application and web interface generally do not require modifications.
 
-Repository Structure
+---
 
+## Repository Structure
+
+```text
 Arduino/
 ├── Decoder/
-│ └── Decoder.ino
+│   └── Decoder.ino
 │
 ├── Transmitter/
-│ └── STB_Remote.ino
+│   └── STB_Remote.ino
 │
 ├── Timing_Examples/
-│ └── 7Star_Remote_Codes.txt
+│   └── 7Star_Remote_Codes.txt
 │
 Android/
 ├── Source_Code/
@@ -180,30 +218,45 @@ Images/
 ├── ESP32_Inside_STB.jpg
 ├── Android_App.png
 └── Web_Interface.png
+```
 
-Future Improvements
-Voice Control
-Tailscale Remote Access
-Home Assistant Integration
-Channel Selection API
-Volume Level API
-Support for Additional STB Models
-Disclaimer
+---
+
+## Future Improvements
+
+* Voice Control
+* Tailscale Remote Access
+* Home Assistant Integration
+* Channel Selection API
+* Volume Level API
+* Additional STB Profiles
+
+---
+
+## Tested Hardware
+
+### Microcontroller
+
+* ESP32-C3 Super Mini
+
+### Set-Top Box
+
+* 7Star Digital Set-Top Box
+
+---
+
+## Disclaimer
 
 This project requires soldering and modification of Set-Top Box hardware.
 
 Proceed carefully and at your own risk.
 
-Always verify voltages with a multimeter before connecting power to the ESP32.
+Always verify voltages using a multimeter before connecting power to the ESP32.
 
-Tested Hardware
-ESP32-C3 Super Mini
-7Star Digital Set-Top Box
+---
 
-Additional hardware compatibility reports are welcome.
-
-License
+## License
 
 MIT License
 
-Feel free to modify, improve, and share the project.
+Feel free to modify, improve and redistribute the project.
